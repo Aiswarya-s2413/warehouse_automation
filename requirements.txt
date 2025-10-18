@@ -1,0 +1,9 @@
+django
+djangorestframework
+celery
+redis
+gunicorn
+psycopg2-binary
+python-dotenv
+google-generativeai
+imapclient
