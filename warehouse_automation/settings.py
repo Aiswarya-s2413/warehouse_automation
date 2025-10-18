@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     'orders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -155,4 +158,11 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-CONNECTED_MAILBOX = os.getenv("CONNECTED_MAILBOX")
+CONNECTED_MAILBOX = os.getenv('CONNECTED_MAILBOX')
+IMAP_HOST = os.getenv('IMAP_HOST', 'imap.gmail.com')
+IMAP_PORT = int(os.getenv('IMAP_PORT', 993))
+IMAP_PASSWORD = os.getenv('IMAP_PASSWORD')
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

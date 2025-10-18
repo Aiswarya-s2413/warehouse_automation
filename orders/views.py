@@ -1,7 +1,7 @@
 from rest_framework import generics
 from .models import Product, Order
 from .serializers import ProductSerializer, OrderCreateSerializer
-from .tasks import send_warehouse_confirmation_email  # Celery task, we'll create later
+from .tasks import send_warehouse_confirmation_email  
 
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()

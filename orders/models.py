@@ -15,6 +15,7 @@ class Order(models.Model):
         ('Order Placed', 'Order Placed'),
         ('Confirmed', 'Confirmed'),
         ('Dispatched', 'Dispatched'),
+        ('Rejected', 'Rejected'),
         ('Cancelled', 'Cancelled'),
     ]
 
@@ -37,4 +38,3 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} for {self.customer_name}"
-
