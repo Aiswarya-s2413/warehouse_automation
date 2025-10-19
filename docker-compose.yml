@@ -9,6 +9,7 @@ services:
       - ./.env
     ports:
       - "5432:5432" # For local debugging, can be removed in production
+      # - "5432:5432" # Not needed in production if only containers access it
 
   redis:
     image: redis:7-alpine
@@ -16,8 +17,14 @@ services:
   web:
     build: .
     command: gunicorn warehouse_automation.wsgi:application --bind 0.0.0.0:8000
+    # Run collectstatic before starting gunicorn
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn warehouse_automation.wsgi:application --workers 4 --bind 0.0.0.0:8000"
     volumes:
       - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
     # The web service will be accessed via nginx, so no need to expose port 8000
     # ports:
     #   - "8000:8000"
@@ -31,6 +38,7 @@ services:
     build: .
     # Command to start the Celery worker
     command: celery -A warehouse_automation worker -l info
+    command: celery -A warehouse_automation worker -l INFO
     volumes:
       - .:/app
     env_file:
@@ -41,12 +49,17 @@ services:
 
   nginx:
     image: nginx:latest
+    image: nginx:1.25-alpine
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
     depends_on:
       - web
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
